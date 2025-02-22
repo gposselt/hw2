@@ -106,7 +106,6 @@ int main(int argc, char* argv[])
             }
 	    /* Add support for other commands here */
             else if (cmd == "ADD") {
-
                 string username;
                 int hitNumber;
 
@@ -125,12 +124,13 @@ int main(int argc, char* argv[])
                     continue;
                 }
 
-                std::pair<map<User*, vector<Product*>>::iterator, bool> cartPair = CartMap.emplace(u, vector<Product*>{});
+                std::pair<map<User*, vector<Product*>>::iterator, bool> cartPair = CartMap.emplace(
+                    u, vector<Product*>{});
                 map<User*, vector<Product*>>::iterator cart = cartPair.first;
 
                 cart->second.push_back(hits[hitNumber - 1]);
-
-            }else if (cmd == "VIEWCART") {
+            }
+            else if (cmd == "VIEWCART") {
                 string username;
 
                 ss >> username;
@@ -152,7 +152,7 @@ int main(int argc, char* argv[])
 
 
                 int index = 1;
-                for(vector<Product*>::iterator it = cart->second.begin(); it != cart->second.end(); ++it) {
+                for (vector<Product*>::iterator it = cart->second.begin(); it != cart->second.end(); ++it) {
                     cout << "Item " << setw(3) << index << endl;
                     cout << (*it)->displayString() << endl;
                     cout << endl;
@@ -160,9 +160,8 @@ int main(int argc, char* argv[])
                 }
 
                 // displayProducts(cart->second);
-
-
-            }else if (cmd == "BUYCART") {
+            }
+            else if (cmd == "BUYCART") {
                 string username;
 
                 ss >> username;
@@ -187,21 +186,16 @@ int main(int argc, char* argv[])
                 for (vector<Product*>::iterator it = cart.begin(); it != cart.end(); ++it) {
                     Product* p = *it;
 
-                    if (p->getQty() > 0 && u->getBalance() >= p->getPrice()){
+                    if (p->getQty() > 0 && u->getBalance() >= p->getPrice()) {
                         p->subtractQty(1);
                         u->deductAmount(p->getPrice());
-                    }else {
+                    }
+                    else {
                         newCart.push_back(*it);
                     }
                 }
 
                 CartMap[u] = newCart;
-
-
-
-
-
-
             }
 #ifdef DEBUG
             //list all the products
@@ -209,8 +203,6 @@ int main(int argc, char* argv[])
                 displayProducts(ds.products);
             }
 #endif
-
-
 
 
             else {

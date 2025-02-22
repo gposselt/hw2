@@ -11,10 +11,8 @@
 #include <vector>
 
 
-class MyDataStore : public DataStore{
-
+class MyDataStore : public DataStore {
 public:
-
     ~MyDataStore() override;
 
     /**
@@ -46,9 +44,7 @@ public:
     std::vector<User*> users;
 
     std::map<std::string, std::vector<Product*>> keywordMap;
-
 };
-
 
 
 #endif //MYDATASTORE_H

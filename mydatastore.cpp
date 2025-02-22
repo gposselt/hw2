@@ -57,10 +57,10 @@ void MyDataStore::addUser(User* u) {
 }
 
 //recursive and search, roughly twice as fast as the first solution I made
-vector<Product*> internalAndSearch(vector<Product*>& matches, const vector<Product*>& candidates, const string& searchWord);
+vector<Product*> internalAndSearch(vector<Product*>& matches, const vector<Product*>& candidates,
+                                   const string& searchWord);
 
 void andSearch(vector<Product*>& matches, const vector<Product*>& candidates, const vector<string>& searchWords) {
-
     vector<Product*> searchVec = candidates;
 
     for (const string& s : searchWords) {
@@ -72,8 +72,8 @@ void andSearch(vector<Product*>& matches, const vector<Product*>& candidates, co
     }
 }
 
-vector<Product*> internalAndSearch(vector<Product*>& matches, const vector<Product*>& candidates, const string& searchWord) {
-
+vector<Product*> internalAndSearch(vector<Product*>& matches, const vector<Product*>& candidates,
+                                   const string& searchWord) {
     vector<Product*> validForSearch;
 
     for (Product* p : candidates) {
@@ -82,14 +82,12 @@ vector<Product*> internalAndSearch(vector<Product*>& matches, const vector<Produ
         if (keywords.find(searchWord) != keywords.end()) {
             validForSearch.push_back(p);
         }
-
     }
 
     return validForSearch;
 }
 
 vector<Product*> MyDataStore::search(vector<string>& terms, int type) {
-
     vector<Product*> matches{};
 
 
@@ -101,16 +99,18 @@ vector<Product*> MyDataStore::search(vector<string>& terms, int type) {
         }
 
         vector<Product*> potentialMatches = result->second;
-        if (type == 1) {//or search, all of them qualify
+        if (type == 1) {
+            //or search, all of them qualify
             matches.insert(matches.end(), potentialMatches.begin(), potentialMatches.end());
-        }else if (type == 0){//and search, abstracted for pretty code :3
+        }
+        else if (type == 0) {
+            //and search, abstracted for pretty code :3
             andSearch(matches, potentialMatches, terms);
         }
     }
 
 
     return matches;
-
 }
 
 User* MyDataStore::getUserFromUsername(string username) const {

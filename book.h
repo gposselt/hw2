@@ -11,7 +11,8 @@
 
 class Book : public Product {
 public:
-    Book(const std::string& category, const std::string& name, double price, int qty, const std::string ISBN, const std::string author)
+    Book(const std::string& category, const std::string& name, double price, int qty, const std::string ISBN,
+         const std::string author)
         : Product(category, name, price, qty), isbn(ISBN), author(author) {
     }
 
@@ -23,7 +24,6 @@ protected:
     std::string isbn;
     std::string author;
 };
-
 
 
 #endif //BOOK_H

@@ -28,7 +28,6 @@ std::string Book::displayString() const {
         << "\n" << this->price_ << " " << this->qty_ << " left." << endl;
 
     return ss.str();
-
 }
 
 void Book::dump(std::ostream& os) const {
