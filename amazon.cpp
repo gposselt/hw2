@@ -5,8 +5,11 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>
+#include <queue>
+
 #include "product.h"
 #include "db_parser.h"
+#include "mydatastore.h"
 #include "product_parser.h"
 #include "util.h"
 
@@ -29,7 +32,7 @@ int main(int argc, char* argv[])
      * Declare your derived DataStore object here replacing
      *  DataStore type to your derived type
      ****************/
-    DataStore ds;
+    MyDataStore ds;
 
 
 
@@ -44,6 +47,8 @@ int main(int argc, char* argv[])
     DBParser parser;
     parser.addSectionParser("products", productSectionParser);
     parser.addSectionParser("users", userSectionParser);
+
+    map<User*, vector<Product*>> CartMap;
 
     // Now parse the database to populate the DataStore
     if( parser.parse(argv[1], ds) ) {
@@ -100,6 +105,110 @@ int main(int argc, char* argv[])
                 done = true;
             }
 	    /* Add support for other commands here */
+            else if (cmd == "ADD") {
+
+                string username;
+                int hitNumber;
+
+                ss >> username;
+                ss >> hitNumber;
+
+                if (!ss) {
+                    cout << "Invalid request" << endl;
+                    continue;
+                }
+
+                User* u = ds.getUserFromUsername(username);
+
+                if (!u) {
+                    cout << "Invalid request" << endl;
+                    continue;
+                }
+
+                std::pair<map<User*, vector<Product*>>::iterator, bool> cartPair = CartMap.emplace(u, vector<Product*>{});
+                map<User*, vector<Product*>>::iterator cart = cartPair.first;
+
+                cart->second.push_back(hits[hitNumber - 1]);
+
+            }else if (cmd == "VIEWCART") {
+                string username;
+
+                ss >> username;
+
+                if (!ss) {
+                    cout << "Invalid username" << endl;
+                    continue;
+                }
+
+                User* u = ds.getUserFromUsername(username);
+
+                if (!u) {
+                    cout << "Invalid username" << endl;
+                    continue;
+                }
+
+                pair<map<User*, vector<Product*>>::iterator, bool> cartPair = CartMap.emplace(u, vector<Product*>{});
+                map<User*, vector<Product*>>::iterator cart = cartPair.first;
+
+
+                int index = 1;
+                for(vector<Product*>::iterator it = cart->second.begin(); it != cart->second.end(); ++it) {
+                    cout << "Item " << setw(3) << index << endl;
+                    cout << (*it)->displayString() << endl;
+                    cout << endl;
+                    index++;
+                }
+
+                // displayProducts(cart->second);
+
+
+            }else if (cmd == "BUYCART") {
+                string username;
+
+                ss >> username;
+
+                if (!ss) {
+                    cout << "Invalid username" << endl;
+                    continue;
+                }
+
+                User* u = ds.getUserFromUsername(username);
+
+                if (!u) {
+                    cout << "Invalid username" << endl;
+                    continue;
+                }
+
+                vector<Product*> cart = CartMap.emplace(u, vector<Product*>{}).first->second;
+
+                vector<Product*> newCart;
+
+
+                for (vector<Product*>::iterator it = cart.begin(); it != cart.end(); ++it) {
+                    Product* p = *it;
+
+                    if (p->getQty() > 0 && u->getBalance() >= p->getPrice()){
+                        p->subtractQty(1);
+                        u->deductAmount(p->getPrice());
+                    }else {
+                        newCart.push_back(*it);
+                    }
+                }
+
+                CartMap[u] = newCart;
+
+
+
+
+
+
+            }
+#ifdef DEBUG
+            //list all the products
+            else if (cmd == "LISTPRODUCTS") {
+                displayProducts(ds.products);
+            }
+#endif
 
 
 

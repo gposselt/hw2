@@ -28,7 +28,7 @@ Product* ProductParser::parse(string category,
 {
 
     parseCommonProduct(is, error, errorMsg, lineno);
-    if(error) return NULL;
+    if(error) return nullptr;
     return parseSpecificProduct(category, is, error, errorMsg, lineno);
 }
 
@@ -97,7 +97,7 @@ Product* ProductBookParser::parseSpecificProduct(std::string category,
     if(ss3.fail()) {
         error = true;
         errorMsg = "Unable to read ISBN";
-        return NULL;
+        return nullptr;//edited to return nullptr instead of NULL - c++ not c!
     }
 
     lineno++;
@@ -105,14 +105,14 @@ Product* ProductBookParser::parseSpecificProduct(std::string category,
     if(is.fail()) {
         error = true;
         errorMsg = "Unable to read author";
-        return NULL;
+        return nullptr;
     }
 #ifdef DEBUG
     cout << "Making product " << prodName_ << endl;
 #endif
     lineno++;
     if(error) {
-        return NULL;
+        return nullptr;
     }
     return makeProduct();
 
@@ -130,12 +130,13 @@ std::string ProductBookParser::categoryID()
  */
 Product* ProductBookParser::makeProduct()
 {
+    Book* product = new Book(this->categoryID(), this->prodName_, this->price_, this->qty_, this->isbn_, this->author_);
 
-
+    return product;
 }
 
 
-ProductClothingParser::ProductClothingParser()
+ProductClothingParser::ProductClothingParser() : ProductParser()
 {
 }
 
@@ -152,7 +153,7 @@ Product* ProductClothingParser::parseSpecificProduct(std::string category,
     if(ss3.fail()) {
         error = true;
         errorMsg = "Unable to read size";
-        return NULL;
+        return nullptr;
     }
 
     lineno++;
@@ -160,14 +161,14 @@ Product* ProductClothingParser::parseSpecificProduct(std::string category,
     if(is.fail() || (brand_.size() == 0)) {
         error = true;
         errorMsg = "Unable to read brand";
-        return NULL;
+        return nullptr;
     }
 #ifdef DEBUG
     cout << "Making product " << prodName_ << endl;
 #endif
     lineno++;
     if(error) {
-        return NULL;
+        return nullptr;
     }
     return makeProduct();
 
@@ -186,13 +187,15 @@ std::string ProductClothingParser::categoryID()
 Product* ProductClothingParser::makeProduct()
 {
 
+    Clothing* clothing = new Clothing(this->categoryID(), this->prodName_, this->price_,
+                                      this->qty_, this->brand_, this->size_);
 
-
+    return clothing;
 }
 
 
 
-ProductMovieParser::ProductMovieParser()
+ProductMovieParser::ProductMovieParser() : ProductParser()
 {
 }
 
@@ -210,7 +213,7 @@ Product* ProductMovieParser::parseSpecificProduct(std::string category,
     if(ss3.fail()) {
         error = true;
         errorMsg = "Unable to read genre";
-        return NULL;
+        return nullptr;
     }
 
     lineno++;
@@ -220,14 +223,14 @@ Product* ProductMovieParser::parseSpecificProduct(std::string category,
     if(ss4.fail()) {
         error = true;
         errorMsg = "Unable to read rating";
-        return NULL;
+        return nullptr;
     }
 #ifdef DEBUG
     cout << "Making product " << prodName_ << endl;
 #endif
     lineno++;
     if(error) {
-        return NULL;
+        return nullptr;
     }
     return makeProduct();
 
@@ -245,6 +248,7 @@ std::string ProductMovieParser::categoryID()
  */
 Product* ProductMovieParser::makeProduct()
 {
+    Movie* movie = new Movie(this->categoryID(), this->prodName_, this->price_, this->qty_, this->genre_, this->rating_);
 
-
+    return movie;
 }

@@ -16,13 +16,53 @@ std::string convToLower(std::string src)
 std::set<std::string> parseStringToWords(string rawWords)
 {
 
+    std::set<std::string> strings{};
+
+    string lowerString = convToLower(rawWords);
+    string trimmed = trim(lowerString);
+
+    size_t i = 0;
+    while (true){
+        if (trimmed.empty()) {
+            break;
+        }
+        if (i == trimmed.length()) {
+            strings.insert(trimmed);
+            break;
+        }
+
+        if (!ispunct(trimmed[i]) && !isspace(trimmed[i])) {
+            i++;
+            continue;
+        }
+
+        if (i < 2) {
+            trimmed = trim(trimmed.erase(0, i + 1));
+            i = 0;
+            continue;
+        }
+
+        std::string agh = trimmed.substr(0, i);
+        agh = trim(agh);
+
+        if (agh.length() > 2) {
+            strings.insert(trim(agh));
+        }
+
+
+        trimmed = trim(trimmed.erase(0, i));
+        i = 0;
+        if (trimmed.empty()) {
+            break;
+        }
+        i++;
+
+    }
 
 
 
 
-
-
-
+    return strings;
 
 
 }
